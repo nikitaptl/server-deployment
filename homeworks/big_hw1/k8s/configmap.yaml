@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: muffin
+data:
+  SPRING_PROFILES_ACTIVE: "prod"
+  APP_TITLE: "Muffin Wallet"

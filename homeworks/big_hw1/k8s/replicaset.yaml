@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: muffin-rs-standalone
+  namespace: muffin
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: muffin-rs-standalone
+  template:
+    metadata:
+      labels:
+        app: muffin-rs-standalone
+    spec:
+      initContainers:
+        - name: wait-for-pg
+          image: postgres:16-alpine
+          env:
+            - name: DB_USER
+              valueFrom: { secretKeyRef: { name: app-secret, key: DB_USER } }
+            - name: DB_PASSWORD
+              valueFrom: { secretKeyRef: { name: app-secret, key: DB_PASSWORD } }
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h pg -p 5432 -U "$DB_USER"; do
+                echo "waiting for pg"
+                sleep 2
+              done
+      containers:
+        - name: server
+          image: nikitaptl/muffin-wallet:0.1.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom: { configMapKeyRef: { name: app-config, key: SPRING_PROFILES_ACTIVE } }
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://pg.muffin.svc.cluster.local:5432/muffin
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom: { secretKeyRef: { name: app-secret, key: DB_USER } }
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom: { secretKeyRef: { name: app-secret, key: DB_PASSWORD } }
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              value: org.postgresql.Driver
+          readinessProbe:
+            tcpSocket: { port: 8080 }
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket: { port: 8080 }
+            initialDelaySeconds: 30
+            periodSeconds: 10

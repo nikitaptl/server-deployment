@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: muffin-svc
+  namespace: muffin
+spec:
+  selector: { app: muffin-server }
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pg
+  namespace: muffin
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: pg } }
+  template:
+    metadata: { labels: { app: pg } }
+    spec:
+      containers:
+        - name: pg
+          image: postgres:16
+          env:
+            - { name: POSTGRES_PASSWORD, value: "postgres" }
+            - { name: POSTGRES_DB, value: "muffin" }
+            - { name: POSTGRES_USER, value: "postgres" }
+          ports: [{ containerPort: 5432 }]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pg
+  namespace: muffin
+spec:
+  selector: { app: pg }
+  ports:
+    - name: pg
+      port: 5432
+      targetPort: 5432

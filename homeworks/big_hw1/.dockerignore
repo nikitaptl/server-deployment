@@ -1,0 +1,6 @@
+.git
+.gradle
+**/out
+**/build
+!muffin-wallet-server/build/libs/
+!muffin-wallet-server/build/libs/muffin-wallet-server-1.0.0.jar
