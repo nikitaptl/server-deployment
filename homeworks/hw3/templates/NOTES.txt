@@ -1,0 +1,3 @@
+Service: {{ .Release.Name }}-currency
+Port: {{ .Values.service.port }}
+kubectl get pods -l app=muffin-currency
