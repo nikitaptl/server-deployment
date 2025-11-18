@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: muffin-wallet
+  labels:
+    app: {{ .Values.podLabels.app }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.podLabels.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.podLabels.app }}
+    spec:
+      volumes:
+        - name: application-config-volume
+          configMap:
+            name: muffin-wallet
+      containers:
+        - name: muffin-wallet
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          volumeMounts:
+            - name: application-config-volume
+              mountPath: /app/config
+          envFrom:
+            - secretRef:
+                name: muffin-wallet
+            - configMapRef:
+                name: muffin-wallet-env
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.liveness.path }}
+              port: {{ .Values.probes.liveness.port }}
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readiness.path }}
+              port: {{ .Values.probes.readiness.port }}
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}

@@ -1,0 +1,12 @@
+releases:
+  - name: muffin-postgres
+    chart: ./charts/muffin-postgres
+    namespace: muffin
+
+  - name: muffin-currency
+    chart: ./charts/muffin-currency
+    namespace: muffin
+
+  - name: muffin-wallet
+    chart: ./charts/muffin-wallet
+    namespace: muffin

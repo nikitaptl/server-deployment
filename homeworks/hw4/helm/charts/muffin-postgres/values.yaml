@@ -1,0 +1,20 @@
+image:
+  repository: postgres
+  tag: "16"
+  pullPolicy: IfNotPresent
+
+postgres:
+  db: "muffin_wallet"
+  user: "muffin-wallet"
+  password: "muffin-wallet"
+
+service:
+  name: pg
+  port: 5432
+  targetPort: 5432
+
+podLabels:
+  app: pg
+
+initSql: |
+  CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
