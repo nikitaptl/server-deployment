@@ -13,7 +13,7 @@
   https://kiali.muffin.nrunnercloud.xyz
 
 - Prometheus:  
-  https://prometheus.muffin.nrunnercloud.xyz
+  https://prom.muffin.nrunnercloud.xyz
 
 - Grafana:  
   https://grafana.muffin.nrunnercloud.xyz
