@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: wallet-gateway
+  namespace: muffin
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - muffin.nrunnercloud.xyz
+        - kiali.muffin.nrunnercloud.xyz
+        - prom.muffin.nrunnercloud.xyz
+        - grafana.muffin.nrunnercloud.xyz
+

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pg
+  labels:
+    app: {{ .Values.podLabels.app }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.podLabels.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.podLabels.app }}
+    spec:
+      volumes:
+        - name: pg-init-sql-volume
+          configMap:
+            name: pg-init-sql
+      containers:
+        - name: pg
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "{{ .Values.postgres.password }}"
+            - name: POSTGRES_DB
+              value: "{{ .Values.postgres.db }}"
+            - name: POSTGRES_USER
+              value: "{{ .Values.postgres.user }}"
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          volumeMounts:
+            - name: pg-init-sql-volume
+              mountPath: /docker-entrypoint-initdb.d

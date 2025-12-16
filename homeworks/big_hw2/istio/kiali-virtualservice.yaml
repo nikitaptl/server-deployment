@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: kiali
+  namespace: istio-system
+spec:
+  hosts:
+    - kiali.muffin.nrunnercloud.xyz
+  gateways:
+    - muffin/wallet-gateway
+  http:
+    - route:
+        - destination:
+            host: kiali
+            port:
+              number: 20001
+

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pg-init-sql
+data:
+  init.sql: |
+{{ .Values.initSql | indent 4 }}
