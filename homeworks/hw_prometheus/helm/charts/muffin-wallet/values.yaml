@@ -1,0 +1,46 @@
+replicaCount: 3
+
+image:
+  repository: aadan1lov/muffin-wallet
+  tag: "1.1.0"
+  pullPolicy: Always
+
+service:
+  name: muffin-wallet
+  type: ClusterIP
+  port: 80
+  targetPort: 8081
+
+podLabels:
+  app: muffin-wallet
+
+secret:
+  datasourcePassword: "muffin-wallet"
+
+jvm:
+  extraOptions: "-Dspring.config.additional-location=/app/config/application.yaml"
+
+config:
+  serverPort: 8081
+  datasourceUrl: "jdbc:postgresql://pg:5432/muffin_wallet"
+  datasourceUsername: "muffin-wallet"
+  currencyServiceUrl: "http://muffin-currency:8083/rate"
+
+probes:
+  liveness:
+    path: /actuator/health/liveness
+    port: 8081
+    initialDelaySeconds: 30
+    periodSeconds: 5
+  readiness:
+    path: /actuator/health/readiness
+    port: 8081
+    initialDelaySeconds: 5
+    periodSeconds: 10
+
+ingress:
+  enabled: true
+  className: nginx
+  host: muffin-wallet.com
+  path: /
+  pathType: Prefix
