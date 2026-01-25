@@ -1,0 +1,7 @@
+ingressClassName: nginx
+
+grafana:
+  enabled: true
+  host: grafana.muffin.nrunnercloud.xyz
+  serviceName: kube-prometheus-grafana
+  servicePort: 80

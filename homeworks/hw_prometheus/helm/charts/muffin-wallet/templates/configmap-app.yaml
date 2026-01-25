@@ -17,8 +17,10 @@ data:
       endpoints:
         web:
           exposure:
-            include: health, info
+            include: health, info, prometheus
       endpoint:
+        prometheus:
+          enabled: true
         health:
           probes:
             enabled: true

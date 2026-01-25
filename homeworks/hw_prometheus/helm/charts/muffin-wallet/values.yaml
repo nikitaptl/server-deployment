@@ -41,6 +41,12 @@ probes:
 ingress:
   enabled: true
   className: nginx
-  host: muffin-wallet.com
+  host: muffin.nrunnercloud.xyz
   path: /
   pathType: Prefix
+
+monitoring:
+  enabled: true
+  namespace: monitoring
+  path: /actuator/prometheus
+  interval: 5s
