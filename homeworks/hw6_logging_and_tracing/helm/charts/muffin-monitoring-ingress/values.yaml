@@ -1,0 +1,7 @@
+ingressClassName: nginx
+
+grafana:
+  enabled: true
+  host: grafana.muffin.test
+  serviceName: grafana
+  servicePort: 80

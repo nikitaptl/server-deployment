@@ -1,0 +1,70 @@
+repositories:
+  - name: ingress-nginx
+    url: https://kubernetes.github.io/ingress-nginx
+
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
+
+  - name: grafana-community
+    url: https://grafana-community.github.io/helm-charts
+
+  - name: zipkin
+    url: https://zipkin.io/zipkin-helm
+
+releases:
+  - name: ingress-nginx
+    namespace: ingress-nginx
+    chart: ingress-nginx/ingress-nginx
+    values:
+      - values/ingress-nginx-loadbalancer.yaml
+
+  - name: muffin-monitoring-ingress
+    chart: ./charts/muffin-monitoring-ingress
+    namespace: monitoring
+
+  - name: muffin-postgres
+    chart: ./charts/muffin-postgres
+    namespace: muffin
+    createNamespace: true
+
+  - name: muffin-currency
+    chart: ./charts/muffin-currency
+    namespace: muffin
+    createNamespace: true
+
+  - name: muffin-wallet
+    chart: ./charts/muffin-wallet
+    namespace: muffin
+    createNamespace: true
+
+  - name: muffin-zipkin
+    chart: zipkin/zipkin
+    namespace: muffin
+    createNamespace: true
+    values:
+      - ./values/zipkin.yaml
+
+  - name: loki
+    chart: grafana/loki
+    namespace: monitoring
+    createNamespace: true
+    values:
+      - ./values/loki.yaml
+
+  - name: grafana
+    chart: grafana-community/grafana
+    namespace: monitoring
+    createNamespace: true
+    values:
+      - ./values/grafana.yaml
+    needs:
+      - monitoring/loki
+
+  - name: alloy
+    chart: grafana/alloy
+    namespace: monitoring
+    createNamespace: true
+    values:
+      - ./values/alloy.yaml
+    needs:
+      - monitoring/loki

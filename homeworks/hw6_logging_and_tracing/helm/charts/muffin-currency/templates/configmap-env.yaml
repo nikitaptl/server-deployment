@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: muffin-currency-env
+data:
+  ZIPKIN_ENDPOINT: {{ .Values.env.zipkin.endpoint }}
+  LOG_PATH: {{ .Values.env.log.path }}
+

@@ -1,0 +1,49 @@
+alloy:
+  configMap:
+    create: true
+    content: |-
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      discovery.relabel "only_muffin_apps" {
+        targets = discovery.kubernetes.pods.targets
+
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          regex         = "muffin"
+          action        = "keep"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          regex         = "muffin-wallet|muffin-currency"
+          action        = "keep"
+        }
+      }
+
+      loki.source.kubernetes "pods" {
+        targets    = discovery.relabel.only_muffin_apps.output
+        forward_to = [loki.process.app_logs.receiver]
+      }
+
+      loki.process "app_logs" {
+        stage.regex {
+          expression = "^\\S+\\s+(?P<logLevel>TRACE|DEBUG|INFO|WARN|ERROR)\\s+traceId=(?P<traceId>[0-9a-fA-F-]*)\\s+spanId=(?P<spanId>[0-9a-fA-F-]*)\\s+"
+        }
+
+        stage.labels {
+          values = {
+            logLevel = "logLevel",
+            traceId  = "traceId",
+          }
+        }
+
+        forward_to = [loki.write.local.receiver]
+      }
+
+      loki.write "local" {
+        endpoint {
+          url = "http://loki:3100/loki/api/v1/push"
+        }
+      }

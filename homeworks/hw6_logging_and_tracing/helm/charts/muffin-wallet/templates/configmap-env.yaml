@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: muffin-wallet-env
+data:
+  JDK_JAVA_OPTIONS: {{ .Values.jvm.extraOptions | quote }}
+  MANAGEMENT_TRACING_SAMPLING_PROBABILITY: {{ .Values.config.tracing.sampling.probability | quote }}
+  MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: {{ .Values.config.tracing.zipkin.endpoint | quote }}
+  LOGGING_PATTERN_LEVEL: {{ .Values.config.logging.pattern | quote }}
+
